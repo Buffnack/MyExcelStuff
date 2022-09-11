@@ -93,13 +93,17 @@ Private Sub Compare_Click()
     End With
 
     
-    Dim i As Integer
-    Dim k As Integer
+    Dim i As Long
+    Dim k As Long
     
     For i = 1 To UBound(remote_data, 1)
         not_found_flag = True
         tmp_id = remote_data(i, 1)
         For k = 1 To UBound(local_data, 1)
+            
+            If local_data(k, 1) = "" Then
+                Exit For
+            End If
             
             If tmp_id = local_data(k, 1) Then
                 not_found_flag = False
@@ -147,7 +151,13 @@ Private Sub update_missing_values(ByVal table As ListObject, ByVal collect As Co
     
     For i = 1 To collect.Count
         'Set tmp_list_row = local_tab.ListRows.Add
+        
         Set tmp_range = collect.Item(i)
+        
+        If Application.CountA(tmp_range.EntireRow) = 0 Then
+            Next
+        End If
+        
         Set tmp_list_row = table.ListRows.Add
         
         tmp_range.Copy Destination:=tmp_list_row.Range
