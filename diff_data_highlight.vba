@@ -7,7 +7,7 @@ Dim remote_table_index As String
 
 Private Sub initWithDefault()
     
-    local_list_index = "Local"
+    local_list_index = "HalloWelt"
     local_table_index = "Tabelle1"
     remote_list_index = "Remote"
     remote_table_index = "Tabelle13"
@@ -80,40 +80,51 @@ Private Sub Compare_Click()
     Dim not_found_flag As Boolean, different_value_flag As Boolean
     Dim tmp_id As String
     
+    'prevent working on the sheet itself
+    Dim local_data As Variant
+    Dim remote_data As Variant
     
-    For Each remote_list_row In remote_tab.ListRows
+    With local_tab.DataBodyRange
+        local_data = .Value
+    End With
+    
+    With remote_tab.DataBodyRange
+        remote_data = .Value
+    End With
+
+    
+    Dim i As Integer
+    Dim k As Integer
+    
+    For i = 1 To UBound(remote_data, 1)
         not_found_flag = True
-        tmp_id = remote_list_row.Range(1, 1)
-        For Each local_list_row In local_tab.ListRows
-    
-            If tmp_id = local_list_row.Range(1, 1) Then
+        tmp_id = remote_data(i, 1)
+        For k = 1 To UBound(local_data, 1)
+            
+            If tmp_id = local_data(k, 1) Then
                 not_found_flag = False
                 different_value_flag = False
-                If remote_list_row.Range(1, 10) <> local_list_row.Range(1, 10) Then
-                    local_list_row.Range(1, 10).Interior.Color = RGB(0, 204, 153)
+                
+                If remote_data(i, 10) <> local_data(k, 10) Then
+                    local_tab.ListRows(k).Range(k, 10).Interior.Color = RGB(0, 204, 153)
                     different_value_flag = True
                 End If
                 
-                If remote_list_row.Range(1, 9) <> local_list_row.Range(1, 9) Then
-                    local_list_row.Range(1, 9).Interior.Color = RGB(153, 204, 255)
+                If remote_data(i, 9) <> local_data(k, 9) Then
+                   local_tab.ListRows(k).Range(k, 9).Interior.Color = RGB(153, 204, 255)
                 End If
-                
             End If
-       
-       
-        Next local_list_row
-       
-       
-       If not_found_flag Then
-            ' Add the row to the tabluar (append it)
-            not_found_list_row.Add Item:=remote_list_row.Range
-        End If
             
         
-    Next remote_list_row
+        Next k
+        
+        If not_found_flag Then
+            not_found_list_row.Add Item:=remote_tab.ListRows(i).Range
+        End If
+        
+    Next i
     
-
-    If not_found_list_row.Count > 0 Then
+     If not_found_list_row.Count > 0 Then
         Dim msgBoxResponse
         msgBoxResponse = MsgBox(CStr(not_found_list_row.Count) + " not found in list. Want to add them?", vbYesNo, "Add missing items?")
         
@@ -122,8 +133,8 @@ Private Sub Compare_Click()
         End If
     
     End If
-    
-    
+
+        
 End Sub
 
 
