@@ -106,19 +106,19 @@ Private Sub Compare_Click()
             'what if empty value detected?
             
             If remote_data(i, 1) = local_data(k, 1) Then
-                local_tab.ListRows(k).Range().Select
+                'local_tab.ListRows(k).Range().Select
                 
                 not_found_flag = False
         
                 If StrComp(remote_data(i, 10), local_data(k, 10)) Then
                     local_tab.ListRows(k).Range(1, 10).Interior.Color = RGB(0, 204, 153)
-                    Set tmp_range = local_tab.ListRows(k).Range(1, 10)
+                    'Set tmp_range = local_tab.ListRows(k).Range(1, 10)
                 End If
                 
                 If StrComp(Trim(remote_data(i, 9)), Trim(local_data(k, 9))) <> 0 Then
                    local_tab.ListRows(k).Range(1, 9).Interior.Color = RGB(153, 204, 255)
-                   local_tab.ListRows(k).Range(1, 9).Select
-                Set tmp_range = local_tab.ListRows(k).Range(1, 9)
+                   'local_tab.ListRows(k).Range(1, 9).Select
+                   'Set tmp_range = local_tab.ListRows(k).Range(1, 9)
                 End If
                 
                 Exit For
