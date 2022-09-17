@@ -95,31 +95,34 @@ Private Sub Compare_Click()
     
     Dim i As Long
     Dim k As Long
-    
-    For i = 1 To UBound(remote_data, 1)
+    Dim tmp_range As Range
+  
+    For i = 1 To UBound(remote_data)
         not_found_flag = True
-        tmp_id = remote_data(i, 1)
-        For k = 1 To UBound(local_data, 1)
+       ' remote_tab.ListRows(i).Range().Select
+       ' Set tmp_local_value = remote_data(i)
+        For k = LBound(local_data) To UBound(local_data)
+           ' tmp_local_value = local_data(k)
+            'what if empty value detected?
             
-            If local_data(k, 1) = "" Then
+            If remote_data(i, 1) = local_data(k, 1) Then
+                local_tab.ListRows(k).Range().Select
+                
+                not_found_flag = False
+        
+                If StrComp(remote_data(i, 10), local_data(k, 10)) Then
+                    local_tab.ListRows(k).Range(1, 10).Interior.Color = RGB(0, 204, 153)
+                    Set tmp_range = local_tab.ListRows(k).Range(1, 10)
+                End If
+                
+                If StrComp(Trim(remote_data(i, 9)), Trim(local_data(k, 9))) <> 0 Then
+                   local_tab.ListRows(k).Range(1, 9).Interior.Color = RGB(153, 204, 255)
+                   local_tab.ListRows(k).Range(1, 9).Select
+                Set tmp_range = local_tab.ListRows(k).Range(1, 9)
+                End If
+                
                 Exit For
             End If
-            
-            If tmp_id = local_data(k, 1) Then
-                not_found_flag = False
-                different_value_flag = False
-                
-                If remote_data(i, 10) <> local_data(k, 10) Then
-                    local_tab.ListRows(k).Range(k, 10).Interior.Color = RGB(0, 204, 153)
-                    different_value_flag = True
-                End If
-                
-                If remote_data(i, 9) <> local_data(k, 9) Then
-                   local_tab.ListRows(k).Range(k, 9).Interior.Color = RGB(153, 204, 255)
-                End If
-            End If
-            
-        
         Next k
         
         If not_found_flag Then
@@ -140,6 +143,9 @@ Private Sub Compare_Click()
 
         
 End Sub
+
+
+
 
 
 Private Sub update_missing_values(ByVal table As ListObject, ByVal collect As Collection)
